@@ -79,17 +79,15 @@ zfspin update --pool zroot --kernel linux-lts
 
 ## Contributing
 
-This project uses [Semantic Versioning](https://semver.org/) with automatic version bumping based on branch naming.
-
 ### Branch Naming Convention
 
-| Branch Type | Pattern | Version Bump | Example |
-|-------------|---------|--------------|---------|
-| Feature | `feature/*` | Minor (0.X.0) | `feature/add-rollback-ui` |
-| Bug Fix | `bugfix/*` | Patch (0.0.X) | `bugfix/fix-snapshot-name` |
-| Hotfix | `hotfix/*` | Patch (0.0.X) | `hotfix/critical-boot-fix` |
+| Branch Type | Pattern | Example |
+|-------------|---------|---------|
+| Feature | `feature/*` | `feature/add-rollback-ui` |
+| Bug Fix | `bugfix/*` | `bugfix/fix-snapshot-name` |
+| Hotfix | `hotfix/*` | `hotfix/critical-boot-fix` |
 
-### Contribution Workflow
+### Development Workflow
 
 1. **Fork & Clone**
    ```bash
@@ -113,20 +111,33 @@ This project uses [Semantic Versioning](https://semver.org/) with automatic vers
    git push origin feature/my-new-feature
    ```
 
-4. **Create Pull Request**
-   - Open PR against `main` branch
-   - CI will run lint, tests, and build checks
-   - Wait for review and approval
+   On push, CI automatically:
+   - Runs linter and tests
+   - Creates a Pull Request to `main`
 
-5. **Merge & Auto-Release**
-   - Once merged to `main`, the release workflow automatically:
-     - Detects the branch type from merge commit
-     - Bumps version accordingly (minor for features, patch for bugfix/hotfix)
-     - Updates `pyproject.toml` with new version
-     - Creates git tag
-     - Publishes to PyPI
-     - Builds AUR package
-     - Creates GitHub Release
+4. **Merge Pull Request**
+   - Review and merge PR to `main`
+   - Creates a **pre-release** with:
+     - Python wheel and source packages
+     - AUR package (`.pkg.tar.zst`)
+     - Debian package (`.deb`)
+
+### Creating a Release
+
+Pre-releases are created automatically on merge to `main`. To create an **official release**:
+
+```bash
+# Create and push a version tag
+git checkout main
+git pull
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+This triggers the release workflow which:
+- Runs all tests
+- Builds Python, AUR, and Debian packages
+- Creates a GitHub Release with all artifacts
 
 ### Local Development
 
@@ -139,6 +150,10 @@ pytest tests/ -v
 
 # Run linter
 ruff check .
+
+# Build packages locally (requires Docker)
+./packaging/arch/build.sh    # Build AUR package
+./packaging/debian/build.sh  # Build Debian package
 ```
 
 ## License
