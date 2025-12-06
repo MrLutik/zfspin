@@ -1,6 +1,4 @@
 """Basic tests for zfspin configuration."""
-import pytest
-
 from zfspin.config import PinningConfig, CompatibilityResult
 
 
