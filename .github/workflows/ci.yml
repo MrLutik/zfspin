@@ -14,6 +14,54 @@ env:
   PYTHON_VERSION: '3.11'
 
 jobs:
+  # Automatically create PR for feature/bugfix/hotfix branches
+  create-pr:
+    if: github.event_name == 'push' && (startsWith(github.ref, 'refs/heads/feature/') || startsWith(github.ref, 'refs/heads/bugfix/') || startsWith(github.ref, 'refs/heads/hotfix/'))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract branch info
+        id: branch
+        run: |
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          BRANCH_TYPE=$(echo "$BRANCH_NAME" | cut -d'/' -f1)
+          BRANCH_DESC=$(echo "$BRANCH_NAME" | cut -d'/' -f2-)
+          echo "name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          echo "type=$BRANCH_TYPE" >> $GITHUB_OUTPUT
+          echo "desc=$BRANCH_DESC" >> $GITHUB_OUTPUT
+
+      - name: Check if PR exists
+        id: check-pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_EXISTS=$(gh pr list --head "${{ steps.branch.outputs.name }}" --json number --jq 'length')
+          echo "exists=$PR_EXISTS" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        if: steps.check-pr.outputs.exists == '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --base main \
+            --head "${{ steps.branch.outputs.name }}" \
+            --title "[${{ steps.branch.outputs.type }}] ${{ steps.branch.outputs.desc }}" \
+            --body "## Summary
+          Automated PR for \`${{ steps.branch.outputs.name }}\`
+
+          ## Type
+          - [x] ${{ steps.branch.outputs.type }}
+
+          ## Checklist
+          - [ ] Code reviewed
+          - [ ] Tests pass
+          - [ ] Documentation updated (if needed)"
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -26,8 +74,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install dependencies
-        run: |
-          pip install ruff
+        run: pip install ruff
 
       - name: Run linter
         run: ruff check .
@@ -44,8 +91,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install dependencies
-        run: |
-          pip install -e ".[dev]"
+        run: pip install -e ".[dev]"
 
       - name: Run tests
         run: pytest tests/ -v

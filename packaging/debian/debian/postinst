@@ -1,0 +1,25 @@
+#!/bin/bash
+set -e
+
+case "$1" in
+    configure)
+        echo ""
+        echo "zfspin installed successfully!"
+        echo ""
+        echo "Quick start:"
+        echo "  1. Enable kernel package locking (recommended):"
+        echo "     sudo zfspin lock enable"
+        echo ""
+        echo "  2. Enable automatic weekly updates:"
+        echo "     sudo systemctl enable --now zfspin-update.timer"
+        echo ""
+        echo "  3. For safe manual updates:"
+        echo "     sudo zfspin update"
+        echo ""
+        echo "For more information: zfspin --help"
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0

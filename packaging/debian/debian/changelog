@@ -1,0 +1,8 @@
+zfspin (1.0.0-1) unstable; urgency=medium
+
+  * Initial release
+  * ZFS/Kernel version pinning for Arch Linux
+  * Boot environment creation before updates
+  * Systemd timer for automatic updates
+
+ -- 0xddd <noreply@github.com>  Fri, 06 Dec 2025 00:00:00 +0000

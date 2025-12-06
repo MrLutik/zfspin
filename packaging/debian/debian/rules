@@ -1,0 +1,23 @@
+#!/usr/bin/make -f
+
+export DH_VERBOSE = 1
+export PYBUILD_NAME = zfspin
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild
+
+override_dh_auto_install:
+	dh_auto_install
+
+	# Install systemd service and timer
+	install -D -m 0644 systemd/zfspin-update.service \
+		debian/zfspin/lib/systemd/system/zfspin-update.service
+	install -D -m 0644 systemd/zfspin-update.timer \
+		debian/zfspin/lib/systemd/system/zfspin-update.timer
+
+	# Install documentation
+	install -D -m 0644 README.md debian/zfspin/usr/share/doc/zfspin/README.md
+
+override_dh_auto_test:
+	# Skip tests during package build
+	true
