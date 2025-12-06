@@ -1,0 +1,22 @@
+[Unit]
+Description=Safe Arch Linux update with ZFS boot environments
+After=network-online.target zfs.target
+Wants=network-online.target
+Requires=zfs.target
+
+# Don't run if another update is in progress
+ConditionPathExists=!/var/lock/zfspin-update.lock
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/zfspin update --auto-detect
+StandardOutput=journal
+StandardError=journal
+# Extended timeout for building packages (2 hours)
+TimeoutStartSec=7200
+
+# Notifications
+ExecStartPost=/bin/bash -c 'echo "zfspin update completed at $(date)" | systemd-cat -t zfspin'
+
+[Install]
+WantedBy=multi-user.target

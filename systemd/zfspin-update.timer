@@ -1,0 +1,13 @@
+[Unit]
+Description=Weekly safe system update timer (zfspin)
+
+[Timer]
+# Run every Sunday at 3 AM
+OnCalendar=Sun 03:00
+# Add random delay up to 1 hour to avoid thundering herd
+RandomizedDelaySec=1h
+# Run missed updates after boot
+Persistent=true
+
+[Install]
+WantedBy=timers.target

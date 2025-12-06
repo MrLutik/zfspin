@@ -1,0 +1,51 @@
+# Maintainer: 0xddd
+# AUR package for zfspin - ZFS/Kernel version pinning for Arch Linux
+
+pkgname=zfspin
+pkgver=0.2.0
+pkgrel=1
+pkgdesc="ZFS/Kernel version pinning for Arch Linux - safe updates with boot environments"
+arch=('any')
+url="https://github.com/MrLutik/zfspin"
+license=('MIT')
+depends=(
+    'python>=3.10'
+    'pacman'
+    'zfs-utils'
+)
+makedepends=(
+    'python-build'
+    'python-installer'
+    'python-wheel'
+    'python-setuptools'
+)
+optdepends=(
+    'zfs-linux: ZFS module for linux kernel'
+    'zfs-linux-lts: ZFS module for linux-lts kernel'
+    'zfs-linux-zen: ZFS module for linux-zen kernel'
+    'zfs-linux-hardened: ZFS module for linux-hardened kernel'
+)
+install=zfspin.install
+source=("${pkgname}-${pkgver}.tar.gz::${url}/archive/refs/tags/v${pkgver}.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+    python -m build --wheel --no-isolation
+}
+
+package() {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+
+    # Install Python package
+    python -m installer --destdir="${pkgdir}" dist/*.whl
+
+    # Install systemd service and timer
+    install -Dm644 systemd/zfspin-update.service \
+        "${pkgdir}/usr/lib/systemd/system/zfspin-update.service"
+    install -Dm644 systemd/zfspin-update.timer \
+        "${pkgdir}/usr/lib/systemd/system/zfspin-update.timer"
+
+    # Install license
+    install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}
