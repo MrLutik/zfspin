@@ -156,7 +156,7 @@ def download_file(url: str, dest: Path, timeout: int = 300, show_progress: bool 
 
     try:
         # Run directly without capturing to show progress
-        result = subprocess.run(
+        subprocess.run(
             curl_cmd,
             check=True,
             timeout=timeout,

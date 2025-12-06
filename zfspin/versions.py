@@ -1,7 +1,6 @@
 """Version resolution for zfspin - auto-detect from archzfs.com."""
 from __future__ import annotations
 
-import re
 import tarfile
 import tempfile
 from dataclasses import dataclass
@@ -9,7 +8,7 @@ from io import BytesIO
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from zfspin.utils import fetch_url, run_command, log
+from zfspin.utils import run_command, log
 
 if TYPE_CHECKING:
     pass
@@ -349,7 +348,7 @@ class VersionResolver:
 
         return result
 
-    def check_compatibility(self, kernel: str = "linux-lts") -> "CompatibilityResult":
+    def check_compatibility(self, kernel: str = "linux-lts") -> "CompatibilityResult":  # noqa: F821
         """Check if the current system is compatible with archzfs.
 
         Compares installed kernel and zfs-utils versions against
