@@ -77,6 +77,70 @@ zfspin uses auto-detection by default. For manual configuration:
 zfspin update --pool zroot --kernel linux-lts
 ```
 
+## Contributing
+
+This project uses [Semantic Versioning](https://semver.org/) with automatic version bumping based on branch naming.
+
+### Branch Naming Convention
+
+| Branch Type | Pattern | Version Bump | Example |
+|-------------|---------|--------------|---------|
+| Feature | `feature/*` | Minor (0.X.0) | `feature/add-rollback-ui` |
+| Bug Fix | `bugfix/*` | Patch (0.0.X) | `bugfix/fix-snapshot-name` |
+| Hotfix | `hotfix/*` | Patch (0.0.X) | `hotfix/critical-boot-fix` |
+
+### Contribution Workflow
+
+1. **Fork & Clone**
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/zfspin.git
+   cd zfspin
+   ```
+
+2. **Create Branch** (use appropriate prefix)
+   ```bash
+   git checkout -b feature/my-new-feature
+   # or
+   git checkout -b bugfix/fix-something
+   # or
+   git checkout -b hotfix/urgent-fix
+   ```
+
+3. **Make Changes & Push**
+   ```bash
+   git add .
+   git commit -m "Add my new feature"
+   git push origin feature/my-new-feature
+   ```
+
+4. **Create Pull Request**
+   - Open PR against `main` branch
+   - CI will run lint, tests, and build checks
+   - Wait for review and approval
+
+5. **Merge & Auto-Release**
+   - Once merged to `main`, the release workflow automatically:
+     - Detects the branch type from merge commit
+     - Bumps version accordingly (minor for features, patch for bugfix/hotfix)
+     - Updates `pyproject.toml` with new version
+     - Creates git tag
+     - Publishes to PyPI
+     - Builds AUR package
+     - Creates GitHub Release
+
+### Local Development
+
+```bash
+# Install in development mode
+pip install -e ".[dev]"
+
+# Run tests
+pytest tests/ -v
+
+# Run linter
+ruff check .
+```
+
 ## License
 
 MIT License - see [LICENSE](LICENSE)
