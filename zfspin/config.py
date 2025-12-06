@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from zfspin.versions import VersionResolver
+    pass
 
 
 @dataclass
@@ -87,7 +87,6 @@ class PinningConfig:
             PinningConfig with detected versions
         """
         from zfspin.versions import VersionResolver
-        from zfspin.utils import log
 
         resolver = VersionResolver()
         info = resolver.get_archzfs_requirements(kernel)
@@ -114,9 +113,6 @@ class PinningConfig:
         Returns:
             PinningConfig with detected versions
         """
-        from zfspin.utils import log
-
-        import sys
         print("=" * 60, flush=True)
         print("AUTO-DETECTING COMPATIBLE KERNEL/ZFS VERSIONS", flush=True)
         print("=" * 60, flush=True)
@@ -125,7 +121,7 @@ class PinningConfig:
         try:
             print("\n[1/2] Trying linux-lts kernel (preferred for ZFS)...", flush=True)
             config = cls.auto_detect(kernel="linux-lts")
-            print(f"  ✓ Found compatible LTS!", flush=True)
+            print("  ✓ Found compatible LTS!", flush=True)
             print(f"    Kernel: {config.kernel_version}", flush=True)
             print(f"    ZFS utils: {config.zfs_utils_version}", flush=True)
             print("=" * 60, flush=True)
@@ -137,7 +133,7 @@ class PinningConfig:
         try:
             print("\n[2/2] Falling back to standard linux kernel...", flush=True)
             config = cls.auto_detect(kernel="linux")
-            print(f"  ✓ Found compatible standard kernel!", flush=True)
+            print("  ✓ Found compatible standard kernel!", flush=True)
             print(f"    Kernel: {config.kernel_version}", flush=True)
             print(f"    ZFS utils: {config.zfs_utils_version}", flush=True)
             print("=" * 60, flush=True)
@@ -174,7 +170,7 @@ class PinningConfig:
             errors.append(f"Invalid kernel_version format: {self.kernel_version}")
 
         if self.zfs_utils_commit and len(self.zfs_utils_commit) < 7:
-            errors.append(f"zfs_utils_commit should be at least 7 characters")
+            errors.append("zfs_utils_commit should be at least 7 characters")
 
         return errors
 

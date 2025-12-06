@@ -21,7 +21,7 @@ def cmd_check(args: argparse.Namespace) -> int:
     # Get requirements from archzfs
     try:
         requirements = resolver.get_archzfs_requirements(kernel)
-        log.info(f"archzfs requires:")
+        log.info("archzfs requires:")
         log.info(f"  Kernel: {requirements['kernel_version']}")
         log.info(f"  ZFS utils: {requirements['zfs_utils_version']}")
         log.info(f"  ZFS module: {requirements['zfs_module_version']}")
@@ -36,7 +36,7 @@ def cmd_check(args: argparse.Namespace) -> int:
         log.info("✓ System is compatible with archzfs")
         return 0
     else:
-        log.warning(f"✗ System is not compatible:")
+        log.warning("✗ System is not compatible:")
         log.warning(f"  Current kernel: {compat.current_kernel}")
         log.warning(f"  Required kernel: {compat.required_kernel}")
         log.warning(f"  Action needed: {compat.action_needed}")
